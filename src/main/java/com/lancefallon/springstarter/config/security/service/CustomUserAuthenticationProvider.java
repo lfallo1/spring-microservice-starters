@@ -41,10 +41,10 @@ public class CustomUserAuthenticationProvider implements AuthenticationProvider 
             //if a result was returned, check application's db for the user
             UserPrivileges user = (UserPrivileges) userDetailsService.loadUserByUsername(username.toString());
 
-            //TODO verify password
+            //TODO actually verify password
 
             // if a user was returned, create a new auth object and add the UserPrivileges to the object
-            if (user != null) {
+            if (user != null && "secret".equals(user.getPassword())) {
                 auth = new CustomUserPasswordAuthenticationToken(authentication.getPrincipal(),
                         authentication.getCredentials(), user.getAuthorities());
                 auth.setUserPrivileges(user);

@@ -7,9 +7,9 @@ import javax.servlet.*;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-public class DbFilter implements Filter {
+public class CustomFilter implements Filter {
 
-    private static final Logger logger = LogManager.getLogger(DbFilter.class);
+    private static final Logger logger = LogManager.getLogger(CustomFilter.class);
 
     private static final String RESPONSE_HEADER_EXPIRES = "Expires";
 
@@ -24,7 +24,7 @@ public class DbFilter implements Filter {
     /**
      * Default constructor.
      */
-    public DbFilter() {
+    public CustomFilter() {
         // TODO Auto-generated constructor stub
     }
 

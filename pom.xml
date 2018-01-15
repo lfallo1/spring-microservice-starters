@@ -22,12 +22,6 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>1.8</java.version>
         <start-class>com.lancefallon.springstarter.SpringBootStarterDemoApplication</start-class>
-
-        <!--set this to your docker acct name -->
-        <docker.image.prefix>lfallo1</docker.image.prefix>
-
-        <!--Set to name of project -->
-        <docker.image.name>springbootstarter</docker.image.name>
     </properties>
 
     <dependencies>
@@ -73,11 +67,6 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-mail</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -136,40 +125,10 @@
             <scope>runtime</scope>
         </dependency>
 
-        <!-- Velocity template engine -->
-        <dependency>
-            <groupId>org.apache.velocity</groupId>
-            <artifactId>velocity</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.velocity</groupId>
-            <artifactId>velocity-tools</artifactId>
-        </dependency>
-
-        <!-- Sendgrid mail client -->
-        <dependency>
-            <groupId>com.sendgrid</groupId>
-            <artifactId>sendgrid-java</artifactId>
-        </dependency>
-
         <!-- Security (oauth / ldap) -->
         <dependency>
             <groupId>org.springframework.security.oauth</groupId>
             <artifactId>spring-security-oauth2</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.security</groupId>
-            <artifactId>spring-security-ldap</artifactId>
-        </dependency>
-
-        <!--JMS Dep -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-activemq</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-jms</artifactId>
         </dependency>
     </dependencies>
 
@@ -189,69 +148,6 @@
                 <artifactId>git-commit-id-plugin</artifactId>
             </plugin>
             <plugin>
-                <groupId>io.fabric8</groupId>
-                <artifactId>docker-maven-plugin</artifactId>
-                <version>0.20.0</version>
-
-                <configuration>
-
-                    <dockerHost>http://127.0.0.1:2375</dockerHost>
-                    <!-- <dockerHost>unix:///var/run/docker.sock</dockerHost> -->
-
-                    <verbose>true</verbose>
-                    <images>
-                        <image>
-                            <name>${docker.image.prefix}/${docker.image.name}</name>
-                            <build>
-                                <dockerFileDir>${project.basedir}/target/dockerfile/</dockerFileDir>
-
-                                <!--copies artficact to docker build dir in target -->
-                                <assembly>
-                                    <descriptorRef>artifact</descriptorRef>
-                                </assembly>
-                                <tags>
-                                    <tag>latest</tag>
-                                    <tag>${project.version}</tag>
-                                </tags>
-                            </build>
-                            <run>
-                                <ports>
-                                    <port>8080:8080</port>
-                                </ports>
-                                <links>
-                                    <link>myrabbitmq:myrabbitmq</link>
-                                </links>
-                                <env>
-                                    <SPRING_RABBITMQ_HOST>myrabbitmq</SPRING_RABBITMQ_HOST>
-                                </env>
-                                <dependsOn>
-                                    <container>myrabbitmq</container>
-                                    <container>pageviewservice</container>
-                                </dependsOn>
-                            </run>
-                        </image>
-                        <!--mysql container -->
-                        <image>
-                            <name>postgres</name>
-                            <alias>postgres</alias>
-                            <run>
-                                <ports>
-                                    <port>5433:5432</port>
-                                </ports>
-                                <env>
-                                    <MYSQL_DATABASE>pageviewservice</MYSQL_DATABASE>
-                                    <MYSQL_ROOT_PASSWORD>root</MYSQL_ROOT_PASSWORD>
-                                    <!-- <MYSQL_ALLOW_EMPTY_PASSWORD>yes</MYSQL_ALLOW_EMPTY_PASSWORD> -->
-                                </env>
-                                <wait>
-                                    <time>10000</time>
-                                </wait>
-                            </run>
-                        </image>
-                    </images>
-                </configuration>
-            </plugin>
-            <plugin>
                 <groupId>org.codehaus.gmavenplus</groupId>
                 <artifactId>gmavenplus-plugin</artifactId>
                 <version>1.5</version>
@@ -263,14 +159,6 @@
                         </goals>
                     </execution>
                 </executions>
-                <configuration>
-                    <scripts>
-                        <script>file:///${project.basedir}/src/main/resources/scripts/BuildDockerfile.groovy</script>
-                        <script>file:///${project.basedir}/src/main/resources/scripts/BuildPushImageScript.groovy
-                        </script>
-                        <script>file:///${project.basedir}/src/main/resources/scripts/BuildDockerCompose.groovy</script>
-                    </scripts>
-                </configuration>
                 <dependencies>
                     <dependency>
                         <groupId>org.codehaus.groovy</groupId>

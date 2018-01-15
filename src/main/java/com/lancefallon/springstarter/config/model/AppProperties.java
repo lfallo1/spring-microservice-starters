@@ -12,12 +12,6 @@ import org.springframework.stereotype.Component;
 @Component
 public class AppProperties {
 
-    @Value("${email.host}")
-    private String emailHost;
-
-    @Value("${email.port}")
-    private int emailPort;
-
     @Value("${datasource.url}")
     private String dbUrl;
 
@@ -32,14 +26,6 @@ public class AppProperties {
 
     @Value("${flyway.locations}")
     private String flywayLocations;
-
-    public String getEmailHost() {
-        return emailHost;
-    }
-
-    public int getEmailPort() {
-        return emailPort;
-    }
 
     public String getDbUrl() {
         return dbUrl;

@@ -1,11 +1,9 @@
 package com.lancefallon.springstarter.films.controller;
 
-import java.util.List;
-import java.util.Map;
-
+import com.lancefallon.springstarter.config.security.model.CustomUserPasswordAuthenticationToken;
+import com.lancefallon.springstarter.films.model.Film;
+import com.lancefallon.springstarter.films.service.FilmService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.actuate.metrics.CounterService;
-import org.springframework.boot.actuate.metrics.GaugeService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
@@ -17,58 +15,45 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.lancefallon.springstarter.config.security.model.CustomUserPasswordAuthenticationToken;
-import com.lancefallon.springstarter.films.model.Film;
-import com.lancefallon.springstarter.films.service.FilmService;
+import java.util.List;
+import java.util.Map;
 
 /**
  * user api endpoint
- * @author lancefallon
  *
+ * @author lancefallon
  */
 @RestController
 @RequestMapping("api/films")
 public class FilmController {
 
-	@Autowired
-	private FilmService filmService;
-	
-	@Autowired
-	private CounterService counterService;
-	
-	@Autowired
-	private GaugeService gaugeService;
+    @Autowired
+    private FilmService filmService;
 
-	@RequestMapping(method=RequestMethod.GET)
-	public ResponseEntity<List<Film>> findAllFilms(){
-		
-		List<Film> films = filmService.findAll();
-		
-		//custom counter/gauge metric
-		counterService.increment("com.lancefallon.springboot.services.counter.filmsendpoint");
-		gaugeService.submit("com.lancefallon.springboot.services.totalfilms", films.size());
-		return new ResponseEntity<>(films, HttpStatus.OK);
-	}
-	 
-	@RequestMapping(value="/auth/{username}", method=RequestMethod.GET)
-	@PreAuthorize("hasRole('ROLE_USER') and @authService.isSelf(#auth, #username)")
-	public ResponseEntity<List<Film>> findAllFilmsAuth(OAuth2Authentication auth, @PathVariable String username){
-		CustomUserPasswordAuthenticationToken token = (CustomUserPasswordAuthenticationToken) auth.getUserAuthentication();
-		System.out.println(token.getUserPrivileges().getDefaultDB());
-		return new ResponseEntity<>(filmService.findAll(), HttpStatus.OK);
-	}
-	
-	@RequestMapping(value="/{filmId}", method=RequestMethod.GET)
-	@Secured("ROLE_ADMIN")
-	@PostAuthorize("returnObject.body.id < 2")
-	public ResponseEntity<Film> findAllFilms(@PathVariable Integer filmId){
-		return new ResponseEntity<>(filmService.findById(filmId), HttpStatus.OK);
-	}
-	
-	
-	@RequestMapping(value="/map", method=RequestMethod.GET)
-	@PostAuthorize("@authService.verifyMap(returnObject.body, #auth)")
-	public ResponseEntity<Map<Integer, String>> generateUserMap(OAuth2Authentication auth){
-		return new ResponseEntity<>(filmService.getFilmsMap(), HttpStatus.OK);
-	}
+    @RequestMapping(method = RequestMethod.GET)
+    public ResponseEntity<List<Film>> findAllFilms() {
+        return new ResponseEntity<>(filmService.findAll(), HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/auth/{username}", method = RequestMethod.GET)
+    @PreAuthorize("hasRole('ROLE_USER') and @authService.isSelf(#auth, #username)")
+    public ResponseEntity<List<Film>> findAllFilmsAuth(OAuth2Authentication auth, @PathVariable String username) {
+        CustomUserPasswordAuthenticationToken token = (CustomUserPasswordAuthenticationToken) auth.getUserAuthentication();
+        System.out.println(token.getUserPrivileges().getDefaultDB());
+        return new ResponseEntity<>(filmService.findAll(), HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/{filmId}", method = RequestMethod.GET)
+    @Secured("ROLE_ADMIN")
+    @PostAuthorize("returnObject.body.id < 2")
+    public ResponseEntity<Film> findAllFilms(@PathVariable Integer filmId) {
+        return new ResponseEntity<>(filmService.findById(filmId), HttpStatus.OK);
+    }
+
+
+    @RequestMapping(value = "/map", method = RequestMethod.GET)
+    @PostAuthorize("@authService.verifyMap(returnObject.body, #auth)")
+    public ResponseEntity<Map<Integer, String>> generateUserMap(OAuth2Authentication auth) {
+        return new ResponseEntity<>(filmService.getFilmsMap(), HttpStatus.OK);
+    }
 }

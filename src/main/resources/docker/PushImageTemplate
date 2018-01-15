@@ -1,3 +1,0 @@
-#!/bin/bash
-
-docker image push lfallo1/springbootstarter:${tag}
