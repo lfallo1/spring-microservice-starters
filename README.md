@@ -1,8 +1,8 @@
 # Spring Microservice
 
-## Server includes: oauth2.0 (custom token services / enhancers and optional LDAP), email with velocity templating, secure rest controller, postgresql configuration, multiple db routing, flyway for db migrations, custom filter / interceptor / scheduling configurations, Messaging (JMS), Spring Actuator for monitoring app health / info / git / etc., Spring Events, Log4j, global exception handling, and 404 routing
+### Server includes: oauth2.0 (custom token services / enhancers and optional LDAP), email with velocity templating, secure rest controller, postgresql configuration, multiple db routing, flyway for db migrations, custom filter / interceptor / scheduling configurations, Messaging (JMS), Spring Actuator for monitoring app health / info / git / etc., Spring Events, Log4j, global exception handling, and 404 routing
 
-## Additionally includes docker plugin for building images, and docker-compose file for spinning up docker containers with runnable jar and postgres db
+### Additionally includes docker plugin for building images, and docker-compose file for spinning up docker containers with runnable jar and postgres db
 
 ### Includes admin client registration. Admin Server can be downloaded @ https://github.com/lfallo1/spring-boot-admin-server. Admin server by default runs on port 8888
 
